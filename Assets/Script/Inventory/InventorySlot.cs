@@ -1,9 +1,8 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Script.SampleScript.Inventory
+namespace Script.Inventory
 {
     //TODO : 모델 기반으로 바꿔야 한다
     public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler

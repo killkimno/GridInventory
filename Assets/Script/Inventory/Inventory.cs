@@ -1,8 +1,7 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace Script.SampleScript.Inventory
+namespace Script.Inventory
 {
     public class Inventory : MonoBehaviour, IDropFieldContract
     {

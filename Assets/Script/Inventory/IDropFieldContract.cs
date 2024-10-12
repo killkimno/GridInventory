@@ -1,4 +1,4 @@
-namespace Script.SampleScript.Inventory
+namespace Script.Inventory
 {
     public interface IDropFieldContract
     {

@@ -1,10 +1,8 @@
-using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-namespace Script.SampleScript.Inventory
+namespace Script.Inventory
 {
     public class DropField : MonoBehaviour, IDropHandler
     {
