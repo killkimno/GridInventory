@@ -10,6 +10,13 @@ namespace Script.Inventory
         [SerializeField]
         private Image _image;
 
+        //시험용
+        [SerializeField]
+        private int _baseSizeX = 2;
+
+        [SerializeField]
+        private int _baseSizeY = 3;
+
         public int SizeX { get; private set; }
         public int SizeY { get; private set; }
 
@@ -22,8 +29,8 @@ namespace Script.Inventory
 
         private void Awake()
         {
-            SizeX = 2;
-            SizeY = 3;
+            SizeX = _baseSizeX;
+            SizeY = _baseSizeY;
         }
 
         public void SetPosition(int x, int y)
@@ -35,6 +42,7 @@ namespace Script.Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
             DropInFiled = false;
+            transform.SetAsLastSibling();
             _image.raycastTarget = false;
             _dragStartPosition = transform.localPosition;
         }
@@ -51,7 +59,6 @@ namespace Script.Inventory
             {
                 transform.localPosition = _dragStartPosition;
             }
-
         }
     }
 }

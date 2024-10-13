@@ -2,6 +2,6 @@ namespace Script.Inventory
 {
     public interface IDropFieldContract
     {
-        void SetItemPosition(InventorySlot slot, int x, int y);
+        void OnDropSlotItem(InventorySlot slot, int x, int y);
     }
 }

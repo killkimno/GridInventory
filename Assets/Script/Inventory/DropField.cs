@@ -19,8 +19,12 @@ namespace Script.Inventory
         private float _slotSize;
         private Vector2 _startPosition;
 
+        public void InitContract(IDropFieldContract contract)
+        {
+            _contract = contract;
+        }
 
-        private void Start()
+        public void Initialize()
         {
             LayoutRebuilder.ForceRebuildLayoutImmediate(_layout.GetComponent<RectTransform>());
             var cellSize = _layout.cellSize + _layout.spacing;
@@ -31,23 +35,18 @@ namespace Script.Inventory
             int width = _layout.constraintCount;
         }
 
-        public void InitContract(IDropFieldContract contract)
-        {
-            _contract = contract;
-        }
-
         public void OnDrop(PointerEventData eventData)
         {
             //int index = transform.GetSiblingIndex();
             var slot = eventData.pointerDrag.GetComponent<InventorySlot>();
             slot.DropInFiled = true;
             var rect = RecognizeRect(slot);
-            _contract.SetItemPosition(slot, (int)rect.x, (int)rect.y);
+            _contract.OnDropSlotItem(slot, (int)rect.x, (int)rect.y);
             //SetPosition(eventData.pointerDrag.GetComponent<InventorySlot>(), (int)rect.x, (int)rect.y);
             //Debug.Log(rect);
         }
 
-        public Rect RecognizeRect(InventorySlot slot)
+        private Rect RecognizeRect(InventorySlot slot)
         {
             var slotRect = slot.GetComponent<RectTransform>();
             var position = slotRect.anchoredPosition;
@@ -63,7 +62,7 @@ namespace Script.Inventory
             return new Rect((int)(adjustX / _slotSize + 0.5f), (int)(adjustY / _slotSize + 0.5f), slot.SizeX, slot.SizeY);
         }
 
-        public void SetPosition(InventorySlot slot, int x, int y)
+        public void RenderDropSlot(InventorySlot slot, int x, int y)
         {
             var slotRect = slot.GetComponent<RectTransform>();
             var position = new Vector2(_startPosition.x + (x * _slotSize), _startPosition.y - (y * _slotSize));

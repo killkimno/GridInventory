@@ -13,22 +13,54 @@ namespace Script.Inventory
         private bool[,] _inventoryMatrix = new bool[InventorySizeY, InventorySizeX]; //y,x
 
 
+        [SerializeField]
+        private InventorySlot _slot1;
+
+        [SerializeField]
+        private InventorySlot _slot2;
+
+        [SerializeField]
+        private InventorySlot _slot3;
+
+        [SerializeField]
+        private InventorySlot _slot4;
+
         private void Awake()
         {
-            _dropField.InitContract(this);
+            Initialize();
         }
 
         private void Initialize()
         {
-            throw new NotImplementedException();
+            _dropField.InitContract(this);
+            _dropField.Initialize();
+            ApplySlotPosition(_slot1, 0, 0);
+            ApplySlotPosition(_slot2, 4, 3);
+            ApplySlotPosition(_slot3, 0, 3);
+            ApplySlotPosition(_slot4, 0, 4);
         }
 
-        public void SetItemPosition(InventorySlot slot, int x, int y)
+        private void ApplySlotPosition(InventorySlot slot, int x, int y)
+        {
+            slot.SetPosition(x, y);
+            _dropField.RenderDropSlot(slot, x, y);
+
+            for (int indexY = y; indexY < y + slot.SizeY; indexY++)
+            {
+                for (int indexX = x; indexX < x + slot.SizeX; indexX++)
+                {
+                    _inventoryMatrix[indexY, indexX] = true;
+                }
+            }
+        }
+
+
+        public void OnDropSlotItem(InventorySlot slot, int x, int y)
         {
             if (x < 0 || x + slot.SizeX > InventorySizeX || y < 0 || y + slot.SizeY > InventorySizeY)
             {
                 Debug.Log("Out of bounds");
-                _dropField.SetPosition(slot, slot.PositionX, slot.PositionY);
+                _dropField.RenderDropSlot(slot, slot.PositionX, slot.PositionY);
                 return;
             }
 
@@ -40,7 +72,6 @@ namespace Script.Inventory
                     _inventoryMatrix[indexY, indexX] = false;
                 }
             }
-
 
             bool available = true;
             for (int indexY = y; indexY < y + slot.SizeY; indexY++)
@@ -66,22 +97,12 @@ namespace Script.Inventory
                     }
                 }
 
-                _dropField.SetPosition(slot, slot.PositionX, slot.PositionY);
+                _dropField.RenderDropSlot(slot, slot.PositionX, slot.PositionY);
                 return;
             }
 
             //문제가 없다
-
-            for (int indexY = y; indexY < y + slot.SizeY; indexY++)
-            {
-                for (int indexX = x; indexX < x + slot.SizeX; indexX++)
-                {
-                    _inventoryMatrix[indexY, indexX] = true;
-                }
-            }
-
-            slot.SetPosition(x, y);
-            _dropField.SetPosition(slot, x, y);
+            ApplySlotPosition(slot, x, y);
         }
     }
 }
