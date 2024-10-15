@@ -6,6 +6,9 @@ namespace Script.Inventory
     public class Inventory : MonoBehaviour, IDropFieldContract
     {
         [SerializeField]
+        private SlotMaker _slotMaker;
+
+        [SerializeField]
         private DropField _dropField;
 
         private const int InventorySizeX = 10;
@@ -39,6 +42,10 @@ namespace Script.Inventory
             {
                 var rect = GetAvailablePosition(TestSizeX, TestSizeY);
                 Debug.Log($"X = {rect.x}, Y = {rect.y}, W = {rect.width}, H = {rect.height}");
+            }
+            else if (Input.GetKeyDown(KeyCode.S))
+            {
+                GenerateSlot();
             }
         }
 
@@ -102,6 +109,24 @@ namespace Script.Inventory
             }
 
             return true;
+        }
+
+        private void GenerateSlot()
+        {
+            //사이즈는 랜덤으로 처리한다
+            int sizeX = UnityEngine.Random.Range(1, 4);
+            int sizeY = UnityEngine.Random.Range(1, 4);
+            var rect = GetAvailablePosition(sizeX, sizeY);
+
+            if (rect.width == 0 || rect.height == 0)
+            {
+                //만들 수 없다
+                Debug.Log($"Cant Make Slot SizeX: {sizeX}, SizeY: {sizeY}");
+                return;
+            }
+
+            var slot = _slotMaker.MakeSlot((int)rect.position.x, (int)rect.position.y, sizeX, sizeY);
+            ApplySlotPosition(slot, (int)rect.position.x, (int)rect.position.y);
         }
 
         public void OnDropSlotItem(InventorySlot slot, int x, int y)

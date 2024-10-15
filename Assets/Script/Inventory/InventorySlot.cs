@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -37,6 +38,17 @@ namespace Script.Inventory
         {
             PositionX = x;
             PositionY = y;
+        }
+
+        public void Initialize(int positionX, int positionY, int sizeX, int sizeY, int imageWidth, in int imageHeight)
+        {
+            _baseSizeX = sizeX;
+            _baseSizeY = sizeY;
+            SizeX = sizeX;
+            SizeY = sizeY;
+            PositionX = positionX;
+            PositionY = positionY;
+            _image.rectTransform.sizeDelta = new Vector2(imageWidth, imageHeight);
         }
 
         public void OnBeginDrag(PointerEventData eventData)
