@@ -25,9 +25,21 @@ namespace Script.Inventory
         [SerializeField]
         private InventorySlot _slot4;
 
+        public int TestSizeX = 1;
+        public int TestSizeY = 1;
+
         private void Awake()
         {
             Initialize();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                var rect = GetAvailablePosition(TestSizeX, TestSizeY);
+                Debug.Log($"X = {rect.x}, Y = {rect.y}, W = {rect.width}, H = {rect.height}");
+            }
         }
 
         private void Initialize()
@@ -54,6 +66,43 @@ namespace Script.Inventory
             }
         }
 
+        private Rect GetAvailablePosition(int sizeX, int sizeY)
+        {
+            //1. 인벤토리 메트릭스를 검사한다
+            //2. 없으면 pos -1/-1로 리턴한다
+            //3. 순차적으로 검색을 진행한다
+            int x = 0;
+            int y = 0;
+            for (int indexY = y; indexY < InventorySizeY - sizeY; indexY++)
+            {
+                for (int indexX = x; indexX < InventorySizeX - sizeX; indexX++)
+                {
+                    if (CheckAvailablePosition(indexX, indexY, sizeX, sizeY))
+                    {
+                        return new Rect(indexX, indexY, sizeX, sizeY);
+                    }
+                }
+            }
+
+            return new Rect();
+        }
+
+        private bool CheckAvailablePosition(int x, int y, int sizeX, int sizeY)
+        {
+            for (int indexY = y; indexY < y + sizeY; indexY++)
+            {
+                for (int indexX = x; indexX < x + sizeX; indexX++)
+                {
+                    //한칸이라도 비지 않았으면 불가능하다
+                    if (_inventoryMatrix[indexY, indexX])
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
 
         public void OnDropSlotItem(InventorySlot slot, int x, int y)
         {
