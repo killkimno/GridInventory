@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Script.Inventory
 {
-    public class Inventory : MonoBehaviour, IDropFieldContract, IRemoveFiledContract
+    public class Inventory : MonoBehaviour, IDropFieldContract, IRemoveFiledContract, IInventorySlotContract
     {
         [SerializeField]
         private SlotMaker _slotMaker;
@@ -129,7 +129,7 @@ namespace Script.Inventory
                 return;
             }
 
-            var slot = _slotMaker.MakeSlot((int)rect.position.x, (int)rect.position.y, sizeX, sizeY);
+            var slot = _slotMaker.MakeSlot((int)rect.position.x, (int)rect.position.y, sizeX, sizeY, this);
             ApplySlotPosition(slot, (int)rect.position.x, (int)rect.position.y);
         }
 
@@ -145,6 +145,7 @@ namespace Script.Inventory
 
             Destroy(slot.gameObject);
         }
+
 
         public void OnDropSlotItem(InventorySlot slot, int x, int y)
         {
@@ -199,6 +200,45 @@ namespace Script.Inventory
         public void OnDropRemoveItem(InventorySlot slot)
         {
             RemoveItem(slot);
+        }
+
+        public void OnDragSlotItem(InventorySlot slot)
+        {
+            var rect = _dropField.RecognizeRect(slot);
+
+            if (rect.width == 0 || rect.height == 0)
+            {
+                return;
+            }
+
+            int x = (int)rect.position.x;
+            int y = (int)rect.position.y;
+
+            //TODO : 할 때 마다 메트릭스를 새로 만들어야 하나??
+            //TODO : 만약 매트릭스를 bool이 아닌 유니크 id로 했다면 새로 만들지 않아도 되었다 -> 고로 새로 만듣나
+            bool[,] matrix = (bool[,])_inventoryMatrix.Clone();
+            for (int indexY = slot.PositionY; indexY < slot.PositionY + slot.SizeY; indexY++)
+            {
+                for (int indexX = slot.PositionX; indexX < slot.PositionX + slot.SizeX; indexX++)
+                {
+                    matrix[indexY, indexX] = false;
+                }
+            }
+
+            bool available = true;
+            for (int indexY = y; indexY < y + slot.SizeY; indexY++)
+            {
+                for (int indexX = x; indexX < x + slot.SizeX; indexX++)
+                {
+                    if (matrix[indexY, indexX])
+                    {
+                        available = false;
+                        break;
+                    }
+                }
+            }
+
+            _dropField.RenderHighlights(available, x, y, slot.SizeX, slot.SizeY);
         }
     }
 }

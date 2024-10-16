@@ -12,7 +12,7 @@ namespace Script.Inventory
         [SerializeField]
         private Transform _slotRoot;
 
-        public InventorySlot MakeSlot(int positionX, int positionY, int sizeX, int sizeY)
+        public InventorySlot MakeSlot(int positionX, int positionY, int sizeX, int sizeY, IInventorySlotContract contract)
         {
             int width = 100;
             int height = 100;
@@ -31,6 +31,7 @@ namespace Script.Inventory
             var slot = slotObject.GetComponent<InventorySlot>();
             slot.gameObject.SetActive(true);
             slot.Initialize(positionX, positionY, sizeX, sizeY, width, height);
+            slot.InitializeContent(contract);
 
             return slot;
         }

@@ -27,6 +27,7 @@ namespace Script.Inventory
         public bool DropInFiled { get; set; }
 
         private Vector2 _dragStartPosition;
+        private IInventorySlotContract _contract;
 
         private void Awake()
         {
@@ -38,6 +39,11 @@ namespace Script.Inventory
         {
             PositionX = x;
             PositionY = y;
+        }
+
+        public void InitializeContent(IInventorySlotContract contract)
+        {
+            _contract = contract;
         }
 
         public void Initialize(int positionX, int positionY, int sizeX, int sizeY, int imageWidth, in int imageHeight)
@@ -62,6 +68,7 @@ namespace Script.Inventory
         public void OnDrag(PointerEventData eventData)
         {
             transform.position = Input.mousePosition;
+            _contract?.OnDragSlotItem(this);
         }
 
         public void OnEndDrag(PointerEventData eventData)
