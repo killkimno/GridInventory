@@ -73,6 +73,14 @@ namespace Script.Inventory
             return new Rect((int)(adjustX / _slotSize + 0.5f), (int)(adjustY / _slotSize + 0.5f), slot.SizeX, slot.SizeY);
         }
 
+        public void RenderDisableHighlights()
+        {
+            foreach (var slot in _gridSlots)
+            {
+                slot.RenderNormal();
+            }
+        }
+
         public void RenderHighlights(bool available, int x, int y, int sizeX, int sizeY)
         {
             foreach (var slot in _gridSlots)
@@ -82,10 +90,15 @@ namespace Script.Inventory
 
             int constraintCount = _layout.constraintCount;
 
-            for (int indexX = 0; indexX < sizeX; indexX++)
+            for (int indexY = 0; indexY < sizeY; indexY++)
             {
-                for (int indexY = 0; indexY < sizeY; indexY++)
+                for (int indexX = 0; indexX < sizeX; indexX++)
                 {
+                    if ((indexX + x) + (indexY + y) * constraintCount > _gridSlots.Count)
+                    {
+                        break;
+                    }
+
                     if (available)
                     {
                         _gridSlots[(indexX + x) + (indexY + y) * constraintCount].RenderAvailable();

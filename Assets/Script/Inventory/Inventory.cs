@@ -61,6 +61,10 @@ namespace Script.Inventory
             ApplySlotPosition(_slot2, 4, 3);
             ApplySlotPosition(_slot3, 0, 3);
             ApplySlotPosition(_slot4, 0, 4);
+            _slot1.InitializeContent(this);
+            _slot2.InitializeContent(this);
+            _slot3.InitializeContent(this);
+            _slot4.InitializeContent(this);
         }
 
         private void ApplySlotPosition(InventorySlot slot, int x, int y)
@@ -206,8 +210,10 @@ namespace Script.Inventory
         {
             var rect = _dropField.RecognizeRect(slot);
 
-            if (rect.width == 0 || rect.height == 0)
+            if (rect.position.x < 0 || rect.position.y < 0 ||
+                rect.position.x + rect.width > InventorySizeX || rect.position.y + rect.height > InventorySizeY)
             {
+                _dropField.RenderDisableHighlights();
                 return;
             }
 
@@ -240,5 +246,9 @@ namespace Script.Inventory
 
             _dropField.RenderHighlights(available, x, y, slot.SizeX, slot.SizeY);
         }
+
+        public void OnDragStartSlotItem(InventorySlot slot) => _dropField.RenderDisableHighlights();
+
+        public void OnDragEndSlotItem(InventorySlot slot) => _dropField.RenderDisableHighlights();
     }
 }

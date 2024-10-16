@@ -63,6 +63,10 @@ namespace Script.Inventory
             transform.SetAsLastSibling();
             _image.raycastTarget = false;
             _dragStartPosition = transform.localPosition;
+            _contract?.OnDragStartSlotItem(this);
+            var tempColor = _image.color;
+            tempColor.a = 0.5f;
+            _image.color = tempColor;
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -78,6 +82,10 @@ namespace Script.Inventory
             {
                 transform.localPosition = _dragStartPosition;
             }
+            var tempColor = _image.color;
+            tempColor.a = 1f;
+            _image.color = tempColor;
+            _contract?.OnDragEndSlotItem(this);
         }
     }
 }
