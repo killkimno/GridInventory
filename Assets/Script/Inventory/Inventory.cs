@@ -3,13 +3,16 @@ using UnityEngine;
 
 namespace Script.Inventory
 {
-    public class Inventory : MonoBehaviour, IDropFieldContract
+    public class Inventory : MonoBehaviour, IDropFieldContract, IRemoveFiledContract
     {
         [SerializeField]
         private SlotMaker _slotMaker;
 
         [SerializeField]
         private DropField _dropField;
+
+        [SerializeField]
+        private RemoveZone _removeZone;
 
         private const int InventorySizeX = 10;
         private const int InventorySizeY = 6;
@@ -51,6 +54,7 @@ namespace Script.Inventory
 
         private void Initialize()
         {
+            _removeZone.InitContract(this);
             _dropField.InitContract(this);
             _dropField.Initialize();
             ApplySlotPosition(_slot1, 0, 0);
@@ -129,6 +133,19 @@ namespace Script.Inventory
             ApplySlotPosition(slot, (int)rect.position.x, (int)rect.position.y);
         }
 
+        private void RemoveItem(InventorySlot slot)
+        {
+            for (int indexY = slot.PositionY; indexY < slot.PositionY + slot.SizeY; indexY++)
+            {
+                for (int indexX = slot.PositionX; indexX < slot.PositionX + slot.SizeX; indexX++)
+                {
+                    _inventoryMatrix[indexY, indexX] = false;
+                }
+            }
+
+            Destroy(slot.gameObject);
+        }
+
         public void OnDropSlotItem(InventorySlot slot, int x, int y)
         {
             if (x < 0 || x + slot.SizeX > InventorySizeX || y < 0 || y + slot.SizeY > InventorySizeY)
@@ -177,6 +194,11 @@ namespace Script.Inventory
 
             //문제가 없다
             ApplySlotPosition(slot, x, y);
+        }
+
+        public void OnDropRemoveItem(InventorySlot slot)
+        {
+            RemoveItem(slot);
         }
     }
 }
